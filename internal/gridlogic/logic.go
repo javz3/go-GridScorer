@@ -14,7 +14,6 @@ type scoreEntry struct {
 // sumSurroundingCells calculates the sum of a cell and its surrounding cells in the grid.
 func sumSurroundingCells(grid []int, row, col, size int) int {
 	sum := grid[row*size+col] // Start with the value of the cell itself
-	fmt.Printf("Calculating sum for cell (%d, %d) starting with its own value %d\n", row, col, grid[row*size+col])
 
 	for dRow := -1; dRow <= 1; dRow++ {
 		for dCol := -1; dCol <= 1; dCol++ {
@@ -23,12 +22,10 @@ func sumSurroundingCells(grid []int, row, col, size int) int {
 				contribution := grid[neighborRow*size+neighborCol]
 				if dRow != 0 || dCol != 0 { // Avoid adding the center cell twice
 					sum += contribution
-					fmt.Printf("\tAdding value from neighbor (%d, %d): %d\n", neighborRow, neighborCol, contribution)
 				}
 			}
 		}
 	}
-	fmt.Printf("Total sum for cell (%d, %d): %d\n", row, col, sum)
 	return sum
 }
 
@@ -62,8 +59,6 @@ func GetTopScores(scores [][]int, countOfHighScores int) string {
 	result := ""
 	for i := 0; i < countOfHighScores; i++ {
 		if i < len(entries) {
-			fmt.Printf("(%d, %d, %d)\n", entries[i].x, entries[i].y, entries[i].score)
-
 			result += fmt.Sprintf("(%d, %d, %d)", entries[i].x, entries[i].y, entries[i].score)
 		}
 	}
