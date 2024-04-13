@@ -3,30 +3,39 @@ package gridlogic
 import (
 	"fmt"
 	"sort"
-	"strings"
 )
+
+type scoreEntry struct {
+	x     int
+	y     int
+	score int
+}
 
 // sumSurroundingCells calculates the sum of a cell and its surrounding cells in the grid.
 func sumSurroundingCells(grid []int, row, col, size int) int {
 	sum := grid[row*size+col] // Start with the value of the cell itself
+	fmt.Printf("Calculating sum for cell (%d, %d) starting with its own value %d\n", row, col, grid[row*size+col])
+
 	for dRow := -1; dRow <= 1; dRow++ {
 		for dCol := -1; dCol <= 1; dCol++ {
-			// Check if we're out of the bounds of the grid
 			neighborRow, neighborCol := row+dRow, col+dCol
 			if neighborRow >= 0 && neighborRow < size && neighborCol >= 0 && neighborCol < size {
-				// Avoid adding the center cell twice
-				if dRow != 0 || dCol != 0 {
-					sum += grid[neighborRow*size+neighborCol]
+				contribution := grid[neighborRow*size+neighborCol]
+				if dRow != 0 || dCol != 0 { // Avoid adding the center cell twice
+					sum += contribution
+					fmt.Printf("\tAdding value from neighbor (%d, %d): %d\n", neighborRow, neighborCol, contribution)
 				}
 			}
 		}
 	}
+	fmt.Printf("Total sum for cell (%d, %d): %d\n", row, col, sum)
 	return sum
 }
 
+// CalculateGridScores processes the given grid and computes the sum of each cell with its neighbors.
 func CalculateGridScores(grid []int, rowLength int) [][]int {
 	if len(grid) == 0 || len(grid) != rowLength*rowLength {
-		return nil // handle incorrect grid size or empty grid
+		return nil // Handle incorrect grid size or empty grid
 	}
 
 	scores := make([][]int, rowLength)
@@ -39,34 +48,24 @@ func CalculateGridScores(grid []int, rowLength int) [][]int {
 	return scores
 }
 
-func GetTopScores(scores [][]int, topCount int) string {
-	var scoreEntries []struct {
-		row, col, score int
-	}
-
-	for row := range scores {
-		for col, score := range scores[row] {
-			scoreEntries = append(scoreEntries, struct {
-				row, col, score int
-			}{row, col, score})
+func GetTopScores(scores [][]int, countOfHighScores int) string {
+	var entries []scoreEntry
+	for i, row := range scores {
+		for j, score := range row {
+			entries = append(entries, scoreEntry{x: i, y: j, score: score})
 		}
 	}
-
-	sort.Slice(scoreEntries, func(i, j int) bool {
-		if scoreEntries[i].score == scoreEntries[j].score {
-			if scoreEntries[i].row == scoreEntries[j].row {
-				return scoreEntries[i].col < scoreEntries[j].col
-			}
-			return scoreEntries[i].row < scoreEntries[j].row
-		}
-		return scoreEntries[i].score > scoreEntries[j].score
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].score > entries[j].score // Sort descending by score
 	})
 
-	var result strings.Builder
-	for i := 0; i < topCount && i < len(scoreEntries); i++ {
-		entry := scoreEntries[i]
-		result.WriteString(fmt.Sprintf("(%d, %d, %d)", entry.row, entry.col, entry.score))
-	}
+	result := ""
+	for i := 0; i < countOfHighScores; i++ {
+		if i < len(entries) {
+			fmt.Printf("(%d, %d, %d)\n", entries[i].x, entries[i].y, entries[i].score)
 
-	return result.String()
+			result += fmt.Sprintf("(%d, %d, %d)", entries[i].x, entries[i].y, entries[i].score)
+		}
+	}
+	return result
 }
