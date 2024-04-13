@@ -5,12 +5,6 @@ import (
 	"sort"
 )
 
-type scoreEntry struct {
-	x     int
-	y     int
-	score int
-}
-
 // sumSurroundingCells calculates the sum of a cell and its surrounding cells in the grid.
 func sumSurroundingCells(grid []int, row, col, size int) int {
 	sum := grid[row*size+col] // Start with the value of the cell itself
