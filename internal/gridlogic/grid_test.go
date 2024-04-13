@@ -72,7 +72,7 @@ func TestGetTopScores(t *testing.T) {
 		{6, 10, 11, 9},
 	}
 	topCount := 2
-	expected := "(2, 1, 17)(1, 1, 16)"
+	expected := "(2, 1, 17) (1, 1, 16)"
 
 	result := GetTopScores(scores, topCount)
 	if result != expected {

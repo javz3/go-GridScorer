@@ -1,7 +1,7 @@
 package gridlogic
 
 type scoreEntry struct {
-	x     int
-	y     int
-	score int
+	rowIndex int
+	colIndex int
+	score    int
 }
